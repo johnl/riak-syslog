@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'riak-syslog'
+require 'riak-syslog/cli'
+
+desc "search syslog messages"
+command [:search] do |c|
+  c.desc 'sort results by timestamp'
+  c.switch [:t, :timesort]
+
+  c.desc 'number of records to return'
+  c.flag [:l, :limit]
+
+  c.action do |global_options, options, args|
+
+    sopts = { 
+      :rows => options[:l] || 10
+    }
+    if options[:t]
+      sopts[:sort] = "timestamp desc"
+    end
+    rl = Record.search(args.join(" "), sopts).collect { |r| {:host => r.hostname, :time => r.timestamp, :log => r.msg.strip} }
+    puts Brightbox::SimpleTable.render(rl, :fields => [:host, :time, :log], :description => false)
+  end
+end
+
+exit run(ARGV)

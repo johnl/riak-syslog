@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'riak-syslog'
+require 'syslog'
+require 'date'
+
+Riaksyslog.read_config
+
+NAMED_PIPE = ENV["NAMED_PIPE"] || "/tmp/riak-syslog-receiver"
+
+LOG = Syslog.open("riak-syslog-receiver", Syslog::LOG_PID | Syslog::LOG_CONS)
+
+LOG.notice("Listening for syslog messages on #{NAMED_PIPE}")
+begin
+	open(NAMED_PIPE, "r").each_line do |line|
+    # template RiaklogFormat,"%FROMHOST\t%syslogfacility-text%\t%msg%\t%HOSTNAME%\t%syslogpriority%\t%syslogtag%\t%programname%\t%syslogseverity-text%\t%timegenerated:::date-rfc3339%\n"
+    toks = line.split('\t')
+    generated = DateTime.parse(toks[7]) rescue DateTime.now
+    r = Riaksyslog::Record.new :from => toks[0], :facility => toks[1], :msg => toks[2],
+    :hostname => toks[3], :priority => toks[4], :tag => toks[5], :program => toks[6], 
+    :severity => toks[7], :timestamp => generated
+    r.save
+	end
+rescue SystemExit, Interrupt
+	LOG.warning("Interrupted, shutting down")
+	raise
+end
+
+LOG.info("Shut down.")
+
