@@ -19,6 +19,9 @@ command [:search] do |c|
   c.desc 'Limit to messages to this time (e.g: 1 day ago)'
   c.flag [:t, :to]
 
+  c.desc 'Show year in timestamp'
+  c.switch [:y, :showyear]
+
   c.action do |global_options, options, args|
 
     from = nil
@@ -34,6 +37,13 @@ command [:search] do |c|
       # FIXME: From?
     end
 
+    if options[:y]
+      time_format = "%Y-%d-%d %H:%M:%S"
+    else
+      time_format = "%b-%d %H:%M:%S"
+    end
+      
+
     sopts = { 
       :rows => options[:l] || 10
     }
@@ -44,8 +54,9 @@ command [:search] do |c|
     if options[:r]
       sopts[:sort] = "timestamp desc"
     end
-    rl = Record.search(args.join(" "), sopts).collect { |r| {:host => r.hostname, :time => r.timestamp.inspect, :log => r.msg.strip} }
-    puts Brightbox::SimpleTable.render(rl, :fields => [:host, :time, :log], :description => false)
+    
+    rl = Record.search(args.join(" "), sopts).collect { |r| {:host => r.hostname, :time => DateTime.parse(r.timestamp).strftime(time_format), :log => r.msg.strip, :program => r.program} }
+    puts Brightbox::SimpleTable.render(rl, :fields => [:host, :time, :program, :log], :description => false)
   end
 end
 
