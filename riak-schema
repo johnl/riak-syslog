@@ -1,16 +1,16 @@
 {
     schema,
     [
-        {version, "1.0"},
+        {version, "2.0"},
         {default_field, "msg"},
-        {default_op, "or"},
+        {default_op, "and"},
         {n_val, 3},
         {analyzer_factory, {erlang, text_analyzers, whitespace_analyzer_factory}}
     ],
     [
         %% Don't parse the field, treat it as a single token.
         {field, [
-				            {name, "id"},
+            {name, "id"},
             {analyzer_factory, {erlang, text_analyzers, noop_analyzer_factory}}
         ]},
         {field, [
@@ -30,10 +30,6 @@
             {analyzer_factory, {erlang, text_analyzers, noop_analyzer_factory}}
         ]},
         {field, [
-            {name, "id"},
-            {analyzer_factory, {erlang, text_analyzers, noop_analyzer_factory}}
-        ]},
-        {field, [
             {name, "program"},
             {analyzer_factory, {erlang, text_analyzers, noop_analyzer_factory}}
         ]},
@@ -41,7 +37,6 @@
             {name, "severity"},
             {analyzer_factory, {erlang, text_analyzers, noop_analyzer_factory}}
         ]},
-
 
 
         %% Parse the field in preparation for full-text searching.
@@ -54,7 +49,8 @@
         %% Treat the field as a date, which currently uses noop_analyzer_factory.
         {field, [
             {name, "timestamp"},
-            {type, date}
+            {type, date},
+						{inline, only}
         ]},
 
         {field, [

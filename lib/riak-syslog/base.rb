@@ -29,7 +29,6 @@ module Riaksyslog
       o = Riak::RObject.new(Record.bucket)
       o.content_type = "application/json"
       o.data = attributes
-      o.indexes = { "timestamp_int" => Set.new([timestamp_i]) }
       o
     end
 

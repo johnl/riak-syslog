@@ -8,20 +8,43 @@ require 'riak-syslog/cli'
 desc "search syslog messages"
 command [:search] do |c|
   c.desc 'sort results by timestamp'
-  c.switch [:t, :timesort]
+  c.switch [:r, :timesort]
 
   c.desc 'number of records to return'
   c.flag [:l, :limit]
 
+  c.desc 'Limit to messages from this time (e.g: 2 days ago)'
+  c.flag [:f, :from]
+  
+  c.desc 'Limit to messages to this time (e.g: 1 day ago)'
+  c.flag [:t, :to]
+
   c.action do |global_options, options, args|
+
+    from = nil
+    to = nil
+
+    if options[:f]
+      from = Chronic.parse(options[:f])
+      to = Time.now
+    end
+
+    if options[:t]
+      to = Chronic.parse(options[:t])
+      # FIXME: From?
+    end
 
     sopts = { 
       :rows => options[:l] || 10
     }
-    if options[:t]
+    if from and to
+      sopts[:filter] = "timestamp:[#{from.iso8601.gsub(':','\:')} TO #{to.iso8601.gsub(':','\:')}]"
+    end
+      
+    if options[:r]
       sopts[:sort] = "timestamp desc"
     end
-    rl = Record.search(args.join(" "), sopts).collect { |r| {:host => r.hostname, :time => r.timestamp, :log => r.msg.strip} }
+    rl = Record.search(args.join(" "), sopts).collect { |r| {:host => r.hostname, :time => r.timestamp.inspect, :log => r.msg.strip} }
     puts Brightbox::SimpleTable.render(rl, :fields => [:host, :time, :log], :description => false)
   end
 end

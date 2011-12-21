@@ -17,7 +17,7 @@ bucket: riak-syslog
 curl -X PUT -H "content-type:application/json" http://localhost:8098/riak/riak-syslog --data @-
 {"props":{"precommit":[{"mod":"riak_search_kv_hook","fun":"precommit"}]}}
 
-search-cmd set-schema riak-syslog ./riak-schema
+search-cmd set-schema riak-syslog /full/path/to/riak-schema
 
 # TODO
 

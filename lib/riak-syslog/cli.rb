@@ -3,6 +3,7 @@ require 'riak-syslog/version'
 require 'gli'
 require 'gli_version'
 require 'riak-syslog/tables'
+require 'chronic'
 
 include GLI
 include Riaksyslog
