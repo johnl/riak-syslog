@@ -11,14 +11,9 @@ Gem::Specification.new do |gem|
   gem.authors = ["John Leach"]
 
   # Deps
-#  gem.add_dependency "riak-client", "~> 1.0.0"
-	gem.add_dependency "activemodel", "~> 3.1.0"
-  gem.add_dependency "json"
+  gem.add_dependency "riak-client", "~> 1.0.3"
 	gem.add_dependency "gli"
-	gem.add_dependency "curb"
-	gem.add_dependency "bundler"
 	gem.add_dependency "hirb"
-	gem.add_dependency "excon"
 	gem.add_dependency "chronic"
 
   # Files
