@@ -85,9 +85,11 @@ See the schema file for other fields you can search on specifically.
 fifo in a specific format will do.
 
 Create a fifo somewhere. On Debian/Ubuntu
-`/var/run/riak-syslog-receiver` is a good place:
+`/var/run/riak-syslog-receiver` is a good place (though it will need
+creating after each boot!):
 
     mkfifo /var/run/riak-syslog-receiver
+	chown syslog.syslog /var/run/riak-syslog-receiver 
 
 Then configure your syslog daemon to write logs to the fifo in the
 right format. For `rsyslog`:
@@ -135,16 +137,24 @@ but it's not critical enough to have 3 replicas.
 
 You then need to run the `riak-syslog-receiver` daemon, which will
 read syslog messages from the fifo and write them into Riak.  If
-you're on Ubuntu and using upstart, it's easy to configure this to run
-on boot. Just create an upstart config, such as
-`/etc/init/riak-syslog.conf` with the contents:
+you're using upstart, it's easy to configure this to run on boot. Just
+create an upstart config called `/etc/init/riak-syslog.conf` with
+the contents:
 
     start on filesystem
     stop on runlevel [06]
     
     respawn
+	
+	env NAMED_PIPE=/var/run/riak-syslog-receiver
+	
+	pre-start script
+	  test -p $NAMED_NAME || mkfifo $NAMED_PIPE
+	  chown syslog.syslog $NAMED_PIPE
+      chmod 640 $NAMED_PIPE
+	end script
     
-    exec /usr/bin/riak-syslog-receiver
+    exec riak-syslog-receiver
 
 then start the daemon:
 
