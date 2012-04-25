@@ -171,8 +171,8 @@ then start the daemon:
 
 # More Info
 
-Author:: John Leach  (mailto:john@johnleach.co.uk)
-Copyright:: Copyright (c) 2012 John Leach
-License:: MIT
-Web page:: http://johnleach.co.uk/words/1063/riak-syslog
-Github:: https://github.com/johnl/riak-syslog
+* Author: John Leach <john@johnleach.co.uk>
+* Copyright: Copyright (c) 2012 John Leach
+* License: MIT
+* Web page: http://johnleach.co.uk/words/1063/riak-syslog
+* Github: https://github.com/johnl/riak-syslog
