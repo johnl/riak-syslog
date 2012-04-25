@@ -110,7 +110,16 @@ http will work just fine:
 
     host: localhost
     bucket: riak-syslog
-		protocol: pbc
+    protocol: pbc
+	
+The search query tool will use this same config file, but it also
+looks in the current directory and `~/.riak-syslog.yml` too. This
+makes it a bit easier to configure it if you're running the search
+tool from a node that isn't part of the riak cluster (obviously you
+need to set the `host` to a Riak node.)
+
+`protocol` can be `pbc` or `http`, depending which ports you've opened
+access to.
 		
 ## Riak config
 
