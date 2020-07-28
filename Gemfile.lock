@@ -16,7 +16,7 @@ GEM
     gli (1.6.0)
     hirb (0.6.2)
     i18n (0.6.0)
-    json (1.5.4)
+    json (2.3.1)
     multi_json (1.0.3)
     riak-client (1.0.3)
       beefcake (~> 0.3.7)
